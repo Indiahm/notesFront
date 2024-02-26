@@ -20,6 +20,7 @@ function updateCounter() {
 // Fonction pour ajouter une note au modèle
 function addNoteToModel() {
   notes.push(inputElem.value);
+
 }
 
 // Fonction pour ajouter une note à la vue
@@ -33,6 +34,8 @@ function addNoteToView() {
 function addNote() {
   addNoteToModel();
   addNoteToView();
+  updateCounter(); // Met à jour le compteur après l'ajout d'une note
+
 }
 
 // Fonction pour réinitialiser le champ de saisie
@@ -80,6 +83,8 @@ listElem.addEventListener('click', event => {
   const id = +event.target.getAttribute('data-id');
   if (!isNaN(id)) {
     NoteManager.remove(id);
+    updateCounter(); // Met à jour le compteur après la suppression d'une note
+
   }
 });
 
@@ -92,6 +97,8 @@ async function refreshNote() {
   let noteElements = notes.map(note => NoteElement.create(note)); // Crée les éléments de note correspondants
   listElem.innerHTML = ''; // Vide la liste des notes actuellement affichées
   noteElements.forEach(noteElem => listElem.appendChild(noteElem)); // Ajoute chaque élément de note à la liste
+  updateCounter(); // Met à jour le compteur après le rafraîchissement des notes
+
 }
 
 refreshNote(); // Appel initial pour afficher les notes
