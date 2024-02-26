@@ -3,58 +3,59 @@ import { NoteManager } from './note-manager.js';
 import { NoteElement } from './note-element.js';
 
 // le modèle
-let notes = [];
-const minChars = 6;
+let notes = []; // Tableau pour stocker les notes
+const minChars = 6; // Nombre minimum de caractères requis pour une note
 
+// Récupération des éléments du DOM
 const inputElem = document.getElementById('my-input');
 const listElem = document.getElementById('list');
 const errorMsg = document.getElementById('error-msg');
 const form = document.getElementsByTagName('form')[0];
 
+// Fonction pour mettre à jour le compteur du nombre de notes
 function updateCounter() {
   document.getElementById('count').innerText = notes.length;
 }
 
+// Fonction pour ajouter une note au modèle
 function addNoteToModel() {
-  // ajouter la nouvelle note dans
   notes.push(inputElem.value);
 }
 
+// Fonction pour ajouter une note à la vue
 function addNoteToView() {
-  // création de l'element d'affichage
   let newItem = document.createElement('li');
   newItem.innerText = inputElem.value;
-
-  // ajouter dans l'arbre / DOM
-  // on l'ajoute comme enfant de la liste
   listElem.appendChild(newItem);
 }
 
+// Fonction pour ajouter une note
 function addNote() {
   addNoteToModel();
   addNoteToView();
 }
 
+// Fonction pour réinitialiser le champ de saisie
 function resetInput() {
-  // reset du champs de saisie
   inputElem.value = '';
 }
 
+// Fonction pour vérifier la validité du champ de saisie
 function isValid() {
-  // vérifier validité de la saisie
-  // au moins quatre caractères
-  let valid = (inputElem.value.length >= minChars);
-  return valid;
+  return (inputElem.value.length >= minChars);
 }
 
+// Fonction pour afficher le message d'erreur
 function showError() {
   errorMsg.style.display = 'block';
 }
 
+// Fonction pour masquer le message d'erreur
 function hideError() {
   errorMsg.style.display = 'none';
 }
 
+// Écouteur d'événements pour vérifier la validité du champ de saisie à chaque changement
 inputElem.addEventListener('change', function (event) {
   if (isValid()) {
     hideError();
@@ -63,45 +64,34 @@ inputElem.addEventListener('change', function (event) {
   }
 });
 
-// gérer la soumission du formulaire.
+// Gestion de la soumission du formulaire
 form.addEventListener('submit', async function (event) {
-  // empêcher le rechargement de la page(comportement par défaut d'un form)
-  event.preventDefault();
+  event.preventDefault(); // Empêche le rechargement de la page
   if (isValid()) {
-    // instantiation d'une nouvelle note.
-    // on instancie avec ID à null (mysql s'occupera tout seul de générer ce numéro)
-    const newNote = new Note(null, inputElem.value);
-
-    await NoteManager.create(newNote);
-    await refreshNote();
-    // updateCounter();
-    resetInput();
+    const newNote = new Note(null, inputElem.value); // Crée une nouvelle note
+    await NoteManager.create(newNote); // Sauvegarde la note
+    await refreshNote(); // Rafraîchit les notes affichées
+    resetInput(); // Réinitialise le champ de saisie
   }
 });
 
+// Écouteur d'événements pour supprimer une note lorsqu'elle est cliquée dans la liste
 listElem.addEventListener('click', event => {
-  console.log('event target: ', event.target);
-  // on convertie en nombre la valeur l'attribut data-id de l'élément
-  // cliqué.
   const id = +event.target.getAttribute('data-id');
-  // si j'ai bien cliqué sur un élément qui est associé à un ID de note (id est bien un nombre)
   if (!isNaN(id)) {
     NoteManager.remove(id);
   }
 });
 
+// Affiche le nombre minimum de caractères requis dans le message d'erreur
 document.querySelector('#error-msg span').innerText = minChars;
 
+// Fonction pour rafraîchir les notes affichées
 async function refreshNote() {
-  notes = await NoteManager.list();
-  let noteElements = notes.map(note => NoteElement.create(note));
-
-  // dans la vue on purge la liste
-  // while (listElem.children) listElem.removeChild(0);
-  listElem.innerHTML = '';
-
-  // maintenant que la liste est vide ajouter, enfant par enfant
-  noteElements.forEach(noteElem => listElem.appendChild(noteElem));
+  notes = await NoteManager.list(); // Récupère la liste des notes
+  let noteElements = notes.map(note => NoteElement.create(note)); // Crée les éléments de note correspondants
+  listElem.innerHTML = ''; // Vide la liste des notes actuellement affichées
+  noteElements.forEach(noteElem => listElem.appendChild(noteElem)); // Ajoute chaque élément de note à la liste
 }
 
-refreshNote();
+refreshNote(); // Appel initial pour afficher les notes
