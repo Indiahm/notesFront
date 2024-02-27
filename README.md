@@ -9,6 +9,29 @@
 
 - 📫 How to reach me **indiahees@protonmail.com**
 
+## How to use
+1. Clone the repo
+``` bash
+git clone https://github.com/Indiahm/notesFront.git
+```
+
+2. Install dependencies
+``` bash
+npm install
+```
+
+3. Start the dev server
+``` bash
+npm run dev
+```
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+This project is open source and available under the [MIT License](LICENSE).
+
+
 <h3 align="left">Connect with me:</h3>
 <p align="left">
 <a href="https://linkedin.com/in/india hees" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="india hees" height="30" width="40" /></a>
